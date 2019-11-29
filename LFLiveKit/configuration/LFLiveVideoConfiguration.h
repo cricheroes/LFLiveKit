@@ -53,6 +53,8 @@ typedef NS_ENUM (NSUInteger, LFLiveVideoQuality){
 /// 视频配置(质量 & 是否是横屏)
 + (instancetype)defaultConfigurationForQuality:(LFLiveVideoQuality)videoQuality outputImageOrientation:(UIInterfaceOrientation)outputImageOrientation;
 
+- (void)refreshVideoSize;
+
 #pragma mark - Attribute
 ///=============================================================================
 /// @name Attribute
@@ -98,5 +100,6 @@ typedef NS_ENUM (NSUInteger, LFLiveVideoQuality){
 
 ///< 是否是横屏
 @property (nonatomic, assign, readonly) BOOL landscape;
+
 
 @end

@@ -49,7 +49,9 @@
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterBackground:) name:UIApplicationWillResignActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationDidBecomeActiveNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarChanged:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarChanged:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationChanged:)    name:UIDeviceOrientationDidChangeNotification  object:nil];
         
         self.beautyFace = YES;
         self.beautyLevel = 0.5;
@@ -234,8 +236,9 @@
 - (UIView *)waterMarkContentView{
     if(!_waterMarkContentView){
         _waterMarkContentView = [UIView new];
-        _waterMarkContentView.frame = CGRectMake(0, 0, self.configuration.videoSize.width, self.configuration.videoSize.height);
-        _waterMarkContentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _waterMarkContentView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width);
+//        _waterMarkContentView.frame = CGRectMake(0, 0, self.configuration.videoSize.width, self.configuration.videoSize.height);
+//        _waterMarkContentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     return _waterMarkContentView;
 }
@@ -362,24 +365,49 @@
 }
 
 - (void)statusBarChanged:(NSNotification *)notification {
-    NSLog(@"UIApplicationWillChangeStatusBarOrientationNotification. UserInfo: %@", notification.userInfo);
+    NSLog(@"UIApplicationDidChangeStatusBarOrientationNotification. UserInfo: %@", notification.userInfo);
     UIInterfaceOrientation statusBar = [[UIApplication sharedApplication] statusBarOrientation];
-
     if(self.configuration.autorotate){
-        if (self.configuration.landscape) {
-            if (statusBar == UIInterfaceOrientationLandscapeLeft) {
-                self.videoCamera.outputImageOrientation = UIInterfaceOrientationLandscapeRight;
-            } else if (statusBar == UIInterfaceOrientationLandscapeRight) {
-                self.videoCamera.outputImageOrientation = UIInterfaceOrientationLandscapeLeft;
-            }
-        } else {
-            if (statusBar == UIInterfaceOrientationPortrait) {
-                self.videoCamera.outputImageOrientation = UIInterfaceOrientationPortraitUpsideDown;
-            } else if (statusBar == UIInterfaceOrientationPortraitUpsideDown) {
-                self.videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
-            }
+        self.configuration.outputImageOrientation = statusBar;
+        [self.configuration refreshVideoSize];
+        self.videoCamera.outputImageOrientation = statusBar;
+        [self reloadFilter];
+    }
+}
+
+- (void)orientationChanged:(NSNotification *)notification{
+//   [self adjustViewsForOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
+    
+    NSLog(@"UIDeviceOrientationDidChangeNotification. UserInfo: %@", notification.userInfo);
+    UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(deviceOrientation==UIDeviceOrientationLandscapeLeft) {
+        interfaceOrientation = UIInterfaceOrientationLandscapeLeft;
+        if(self.configuration.autorotate){
+            self.configuration.outputImageOrientation = interfaceOrientation;
+            [self.configuration refreshVideoSize];
+            self.videoCamera.outputImageOrientation = UIInterfaceOrientationLandscapeRight;
+            [self reloadFilter];
         }
     }
+    else if(deviceOrientation==UIDeviceOrientationLandscapeRight) {
+        interfaceOrientation = UIInterfaceOrientationLandscapeRight;
+        if(self.configuration.autorotate){
+            self.configuration.outputImageOrientation = interfaceOrientation;
+            [self.configuration refreshVideoSize];
+            self.videoCamera.outputImageOrientation = UIInterfaceOrientationLandscapeLeft;
+            [self reloadFilter];
+        }
+    }else{
+        interfaceOrientation = UIInterfaceOrientationLandscapeRight;
+        if(self.configuration.autorotate){
+            self.configuration.outputImageOrientation = UIInterfaceOrientationLandscapeRight;
+            [self.configuration refreshVideoSize];
+            self.videoCamera.outputImageOrientation = UIInterfaceOrientationLandscapeRight;
+            [self reloadFilter];
+        }
+    }
+    
 }
 
 @end

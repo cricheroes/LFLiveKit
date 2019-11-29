@@ -346,6 +346,19 @@
     }
 }
 
+- (void)refreshVideoSize {
+    CGSize size = self.videoSize;
+    if(self.landscape) {
+        CGFloat width = MAX(size.width, size.height);
+        CGFloat height = MIN(size.width, size.height);
+        self.videoSize = CGSizeMake(width, height);
+    } else {
+        CGFloat width = MIN(size.width, size.height);
+        CGFloat height = MAX(size.width, size.height);
+        self.videoSize = CGSizeMake(width, height);
+    }
+}
+
 - (id)copyWithZone:(nullable NSZone *)zone {
     LFLiveVideoConfiguration *other = [self.class defaultConfiguration];
     return other;
