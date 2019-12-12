@@ -327,10 +327,10 @@
         if(self.saveLocalVideo) [self.output addTarget:self.movieWriter];
     }
     
-    [self.filter forceProcessingAtSize:self.configuration.videoSize];
-    [self.output forceProcessingAtSize:self.configuration.videoSize];
-    [self.blendFilter forceProcessingAtSize:self.configuration.videoSize];
-    [self.uiElementInput forceProcessingAtSize:self.configuration.videoSize];
+    [self.filter forceProcessingAtSize: CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];
+    [self.output forceProcessingAtSize: CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];
+    [self.blendFilter forceProcessingAtSize: CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];
+    [self.uiElementInput forceProcessingAtSize: CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height)];
     
     
     //< 输出数据
