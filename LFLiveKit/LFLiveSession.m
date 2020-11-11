@@ -109,6 +109,16 @@
     self.socket = nil;
 }
 
+- (void)stopLocalRecording {
+    [self.videoCaptureSource.movieWriter finishRecording];
+    self.videoCaptureSource.movieWriter = nil;
+}
+
+- (void)startLocalRecording {
+    [self.videoCaptureSource reloadFilter];
+    [self.videoCaptureSource.movieWriter startRecording];
+}
+
 - (void)pushVideo:(nullable CVPixelBufferRef)pixelBuffer{
     if(self.captureType & LFLiveInputMaskVideo){
         if (self.uploading) [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:NOW];

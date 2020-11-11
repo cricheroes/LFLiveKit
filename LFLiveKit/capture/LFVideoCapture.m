@@ -32,7 +32,7 @@
 @property (nonatomic, strong) GPUImageUIElement *uiElementInput;
 @property (nonatomic, strong) UIView *waterMarkContentView;
 
-@property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
+//@property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
 
 @end
 

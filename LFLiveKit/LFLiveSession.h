@@ -158,5 +158,8 @@ typedef NS_ENUM(NSInteger,LFLiveCaptureTypeMask) {
 /** support outer input pcm audio(set LFLiveCaptureTypeMask) .*/
 - (void)pushAudio:(nullable NSData*)audioData;
 
-@end
+- (void)startLocalRecording;
+- (void)stopLocalRecording;
 
+
+@end
