@@ -116,6 +116,7 @@
 
 - (void)startLocalRecording {
     [self.videoCaptureSource reloadFilter];
+    [self.videoCaptureSource.movieWriter setHasAudioTrack: !self.muted];
     [self.videoCaptureSource.movieWriter startRecording];
 }
 
